@@ -90,14 +90,15 @@ public class YutGameUI extends JFrame {
         titlePanel.setOpaque(false);
         
         JLabel titleLabel = new JLabel("Yut Game (Yut Nori)");
-        titleLabel.setFont(new Font("微软雅黑", Font.BOLD, 28));
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 28)); 
         titleLabel.setForeground(new Color(120, 60, 0));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
+
         JLabel subtitleLabel = new JLabel("Korean traditional folk game");
-        subtitleLabel.setFont(new Font("微软雅黑", Font.PLAIN, 16));
+        subtitleLabel.setFont(new Font("Arial", Font.PLAIN, 16)); 
         subtitleLabel.setForeground(new Color(150, 90, 30));
         subtitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         
         titlePanel.add(titleLabel);
         titlePanel.add(Box.createVerticalStrut(5));
@@ -145,7 +146,7 @@ public class YutGameUI extends JFrame {
         
         // Control panel title
         JLabel controlTitle = new JLabel("Game Control");
-        controlTitle.setFont(new Font("微软雅黑", Font.BOLD, 16));
+        controlTitle.setFont(new Font("Arial", Font.BOLD, 16));
         controlTitle.setForeground(new Color(120, 60, 0));
         controlTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         controlPanel.add(controlTitle);
@@ -158,12 +159,12 @@ public class YutGameUI extends JFrame {
         statusPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         
         statusLabel = new JLabel("Game Started");
-        statusLabel.setFont(new Font("微软雅黑", Font.BOLD, 14));
+        statusLabel.setFont(new Font("Arial", Font.BOLD, 14));
         statusLabel.setForeground(new Color(50, 50, 50));
         statusLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         
         resultLabel = new JLabel("");
-        resultLabel.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+        resultLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         resultLabel.setForeground(new Color(160, 80, 0));
         resultLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         
@@ -218,7 +219,7 @@ public class YutGameUI extends JFrame {
      */
     private JButton createStyledButton(String text, Color background, Color foreground) {
         JButton button = new JButton(text);
-        button.setFont(new Font("微软雅黑", Font.BOLD, 14));
+        button.setFont(new Font("Arial", Font.BOLD, 14));
         button.setBackground(background);
         button.setForeground(foreground);
         button.setFocusPainted(false);
@@ -521,7 +522,7 @@ public class YutGameUI extends JFrame {
         
         // Add the title
         JLabel titleLabel = new JLabel("Player Information");
-        titleLabel.setFont(new Font("微软雅黑", Font.BOLD, 16));
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
         titleLabel.setForeground(new Color(120, 60, 0));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         playerInfoPanel.add(titleLabel);
@@ -605,7 +606,7 @@ public class YutGameUI extends JFrame {
             
             // Player name label
             JLabel nameLabel = new JLabel(player.getName());
-            nameLabel.setFont(new Font("微软雅黑", Font.BOLD, 14));
+            nameLabel.setFont(new Font("Arial", Font.BOLD, 14));
             
             // If it's the current player, add an indicator and change color
             if (player == game.getCurrentPlayer()) {
@@ -687,11 +688,11 @@ public class YutGameUI extends JFrame {
         panel.setOpaque(false);
         
         JLabel textLabel = new JLabel(text + ":");
-        textLabel.setFont(new Font("微软雅黑", Font.PLAIN, 12));
+        textLabel.setFont(new Font("Arial", Font.PLAIN, 12));
         textLabel.setForeground(new Color(100, 100, 100));
         
         JLabel countLabel = new JLabel(String.valueOf(count));
-        countLabel.setFont(new Font("微软雅黑", Font.BOLD, 14));
+        countLabel.setFont(new Font("Arial", Font.BOLD, 14));
         countLabel.setForeground(valueColor);
         
         panel.add(textLabel);
@@ -1140,7 +1141,7 @@ public class YutGameUI extends JFrame {
  * Draw start and end markers
  */
 private void drawStartEndMarkers(Graphics2D g2d) {
-    g2d.setFont(new Font("微软雅黑", Font.BOLD, 16));
+    g2d.setFont(new Font("Arial", Font.BOLD, 16));
     
     // Draw start and end markers with large font and background color
     drawTextWithBackground(g2d, "Start", 280, 535, Color.WHITE, new Color(178, 34, 34, 200));
@@ -1225,7 +1226,7 @@ private void drawHomeArea(Graphics2D g2d, Player player, int x, int y) {
     
     // Draw player label
     String label = player.getName() + " Home";
-    g2d.setFont(new Font("微软雅黑", Font.BOLD, 16));
+    g2d.setFont(new Font("Arial", Font.BOLD, 16));
     FontMetrics fm = g2d.getFontMetrics();
     int textWidth = fm.stringWidth(label);
     
