@@ -1,9 +1,9 @@
 @echo off
-rem 编译所有Java文件
+rem Compile all Java files
 mkdir target\classes
 javac -d target\classes src\main\java\*.java
 
-rem 运行游戏
+rem Run the game
 java -cp target\classes src.main.java.com.xingyang.YutLauncher
 
 pause 
