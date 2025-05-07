@@ -29,9 +29,18 @@ public class Piece {
      * @param steps Number of steps to move
      * @return Whether the piece has reached the end
      */
-    public boolean move(int steps) {
+    public boolean move(int steps, YutGame.BoardPoint [] boardPoints) {
         if (isFinished) {
             return true; // A piece that has reached the end does not move
+        }
+
+        if (steps == -1) {
+            if (previous != -1) {
+                int temp = position;
+                position = previous;
+                previous = temp;
+            }
+            return false;
         }
         
         if (isHome) {
@@ -39,13 +48,32 @@ public class Piece {
             isHome = false;
             position = 0; // Starting position
         }
-        
-        position += steps;
-        
-        // Check whether the piece has reached the end (position 29 is the endpoint)
-        if (position >= 30) {
+
+        int currentIndex = position;
+        int tempSteps = steps;
+        while (tempSteps > 0) {
+            YutGame.BoardPoint current = boardPoints[currentIndex];
+
+            previous = currentIndex;
+
+            if (tempSteps == steps && current.nextAlt != null) {
+                currentIndex = current.nextAlt.getIndex();
+            } else if (current.next != null) {
+                currentIndex = current.next.getIndex();
+            } else {
+                // 더 이상 갈 곳 없음
+                isFinished = true;
+                position = currentIndex;
+                return true;
+            }
+            tempSteps--;
+        }
+
+        position = currentIndex;
+
+        if (position == 30) {
             isFinished = true;
-            position = 30; // Set to endpoint position
+            isHome = true;
             return true;
         }
         

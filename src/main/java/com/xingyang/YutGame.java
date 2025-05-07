@@ -70,7 +70,7 @@ public class YutGame {
         private int x, y;  // Coordinates
         private List<Piece> pieces = new ArrayList<>();  // Pieces at this point
 
-        public int index;
+        private int index;
         public BoardPoint next;
         public BoardPoint nextAlt;
 
@@ -97,6 +97,10 @@ public class YutGame {
 
         public void removePiece(Piece piece) {
             pieces.remove(piece);
+        }
+
+        public int getIndex() {
+            return index;
         }
     }
 
@@ -176,6 +180,10 @@ public class YutGame {
         // End point
         boardPoints[30] = new BoardPoint(200, 550);
 
+        for(int i = 0; i < boardPoints.length; i++) {
+            boardPoints[i].index = i;
+        }
+
         linkBoardPoints();
     }
 
@@ -185,6 +193,7 @@ public class YutGame {
         for (int i = 0; i < 19; i++) {
             boardPoints[i].next = boardPoints[i + 1];
         }
+        boardPoints[19].next = boardPoints[30];
 
         // diagonal path 1: 5 → 24 → 25 → 28 → 26 → 27 -> 15
         boardPoints[5].nextAlt = boardPoints[24];
@@ -201,9 +210,8 @@ public class YutGame {
         boardPoints[21].next = boardPoints[29];
         boardPoints[29].next = boardPoints[22];
         boardPoints[22].next = boardPoints[23];
-        boardPoints[23].next = boardPoints[0];
+        boardPoints[23].next = boardPoints[30];
 
-        boardPoints[0].next = boardPoints[30];
     }
 
 
@@ -243,7 +251,7 @@ public class YutGame {
         int oldPosition = piece.getPosition();
 
         // Move piece
-        boolean reachedEnd = piece.move(lastResult.getSteps());
+        boolean reachedEnd = piece.move(lastResult.getSteps(), boardPoints);
 
         // Update board piece position
         if (oldPosition >= 0 && oldPosition < boardPoints.length) {
