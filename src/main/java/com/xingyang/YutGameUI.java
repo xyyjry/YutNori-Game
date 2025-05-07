@@ -1,4 +1,4 @@
-package src.main.java.com.xingyang;
+package com.xingyang;
 
 import javax.swing.*;
 import java.awt.*;
@@ -881,709 +881,709 @@ public class YutGameUI extends JFrame {
             
             return null;
         }
-    }
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D) g;
-        
-        // Enable anti-aliasing
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        
-        // Draw the game board
-        drawBoard(g2d);
-        
-        // Draw all the pieces
-        drawPieces(g2d);
-        
-        // Highlight the selected piece if there is one
-        if (selectedPiece != null) {
-            highlightSelectedPiece(g2d);
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2d = (Graphics2D) g;
+
+            // Enable anti-aliasing
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            // Draw the game board
+            drawBoard(g2d);
+
+            // Draw all the pieces
+            drawPieces(g2d);
+
+            // Highlight the selected piece if there is one
+            if (selectedPiece != null) {
+                highlightSelectedPiece(g2d);
+            }
+
+            // Draw Yut sticks
+            drawYutSticks(g2d);
+
+            // If there was a recent capture event, display special effects
+            if (game.getLastCaptureInfo() != null && game.getLastCaptureInfo().isRecent()) {
+                drawCaptureEffect(g2d, game.getLastCaptureInfo());
+            }
         }
-        
-        // Draw Yut sticks
-        drawYutSticks(g2d);
-        
-        // If there was a recent capture event, display special effects
-        if (game.getLastCaptureInfo() != null && game.getLastCaptureInfo().isRecent()) {
-            drawCaptureEffect(g2d, game.getLastCaptureInfo());
+
+
+        /**
+         * Draw the game board
+         */
+        private void drawBoard(Graphics2D g2d) {
+            int width = getWidth();
+            int height = getHeight();
+
+            // Enable high-quality rendering
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+
+            // Draw the background of the board - light tone
+            g2d.setColor(new Color(245, 235, 225));
+            g2d.fillRect(0, 0, width, height);
+
+            // Create wood texture effect - more natural wood color and gradient
+            createWoodTexture(g2d, 0, 0, width, height);
+
+            // Add a soft inner shadow border effect
+            drawBoardBorder(g2d, 10, 10, width-20, height-20);
+
+            // Draw the center area
+            int centerX = width / 2;
+            int centerY = height / 2;
+            int boardSize = Math.min(width, height) - 100;
+            int boardX = centerX - boardSize/2;
+            int boardY = centerY - boardSize/2;
+
+            // Draw the center game area - dark wood texture
+            createWoodTexture(g2d, boardX, boardY, boardSize, boardSize,
+                             new Color(180, 150, 110), new Color(140, 100, 60));
+
+            // Draw the outer frame
+            g2d.setColor(new Color(120, 60, 30));
+            g2d.setStroke(new BasicStroke(3, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            g2d.drawRect(boardX, boardY, boardSize, boardSize);
+
+            // Draw center cross and diagonal lines - more elegant lines
+            drawBoardLines(g2d, boardX, boardY, boardSize);
+
+            // Draw all points
+            drawBoardPoints(g2d);
+
+            // Draw start and end markers
+            drawStartEndMarkers(g2d);
+
+            // Draw player home areas
+            drawPlayerHomeAreas(g2d);
         }
-    }
-    
-    /**
-     * Draw the game board
-     */
-    private void drawBoard(Graphics2D g2d) {
-        int width = getWidth();
-        int height = getHeight();
-        
-        // Enable high-quality rendering
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-        
-        // Draw the background of the board - light tone
-        g2d.setColor(new Color(245, 235, 225));
-        g2d.fillRect(0, 0, width, height);
-        
-        // Create wood texture effect - more natural wood color and gradient
-        createWoodTexture(g2d, 0, 0, width, height);
-        
-        // Add a soft inner shadow border effect
-        drawBoardBorder(g2d, 10, 10, width-20, height-20);
-        
-        // Draw the center area
-        int centerX = width / 2;
-        int centerY = height / 2;
-        int boardSize = Math.min(width, height) - 100;
-        int boardX = centerX - boardSize/2;
-        int boardY = centerY - boardSize/2;
-        
-        // Draw the center game area - dark wood texture
-        createWoodTexture(g2d, boardX, boardY, boardSize, boardSize, 
-                         new Color(180, 150, 110), new Color(140, 100, 60));
-        
-        // Draw the outer frame
-        g2d.setColor(new Color(120, 60, 30));
-        g2d.setStroke(new BasicStroke(3, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-        g2d.drawRect(boardX, boardY, boardSize, boardSize);
-        
-        // Draw center cross and diagonal lines - more elegant lines
-        drawBoardLines(g2d, boardX, boardY, boardSize);
-        
-        // Draw all points
-        drawBoardPoints(g2d);
-        
-        // Draw start and end markers
-        drawStartEndMarkers(g2d);
-        
-        // Draw player home areas
-        drawPlayerHomeAreas(g2d);
-    }
-    
-    /**
-     * Create realistic wood texture
-     */
-    private void createWoodTexture(Graphics2D g2d, int x, int y, int width, int height) {
-        createWoodTexture(g2d, x, y, width, height, 
-                         new Color(220, 200, 165), new Color(180, 160, 125));
-    }
-    
-    /**
-     * Create custom colored wood texture
-     */
-    private void createWoodTexture(Graphics2D g2d, int x, int y, int width, int height, 
-                                   Color lightColor, Color darkColor) {
-        // Create main gradient background
-        GradientPaint mainGradient = new GradientPaint(
-            x, y, lightColor,
-            x, y + height, darkColor,
-            false);
-        g2d.setPaint(mainGradient);
-        g2d.fillRect(x, y, width, height);
-        
-        // Save current clipping region
-        Shape oldClip = g2d.getClip();
-        g2d.setClip(x, y, width, height);
-        
-        // Add random wood grain lines
-        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
-        
-        // Use a fixed random seed for consistency
-        java.util.Random rand = new java.util.Random(12345);
-        
-        int numGrains = width / 5;
-        
-        for (int i = 0; i < numGrains; i++) {
-            int grainX = x + rand.nextInt(width);
-            int grainWidth = 1 + rand.nextInt(3);
-            int curve = 10 + rand.nextInt(20);
-            
-            // Color randomly changes between light and dark
-            Color grainColor;
-            if (rand.nextBoolean()) {
-                grainColor = new Color(
-                    Math.max(0, darkColor.getRed() - 20 - rand.nextInt(30)),
-                    Math.max(0, darkColor.getGreen() - 20 - rand.nextInt(30)),
-                    Math.max(0, darkColor.getBlue() - 20 - rand.nextInt(30)),
-                    50 + rand.nextInt(100)
-                );
+
+        /**
+         * Create realistic wood texture
+         */
+        private void createWoodTexture(Graphics2D g2d, int x, int y, int width, int height) {
+            createWoodTexture(g2d, x, y, width, height,
+                             new Color(220, 200, 165), new Color(180, 160, 125));
+        }
+
+        /**
+         * Create custom colored wood texture
+         */
+        private void createWoodTexture(Graphics2D g2d, int x, int y, int width, int height,
+                                       Color lightColor, Color darkColor) {
+            // Create main gradient background
+            GradientPaint mainGradient = new GradientPaint(
+                x, y, lightColor,
+                x, y + height, darkColor,
+                false);
+            g2d.setPaint(mainGradient);
+            g2d.fillRect(x, y, width, height);
+
+            // Save current clipping region
+            Shape oldClip = g2d.getClip();
+            g2d.setClip(x, y, width, height);
+
+            // Add random wood grain lines
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
+
+            // Use a fixed random seed for consistency
+            java.util.Random rand = new java.util.Random(12345);
+
+            int numGrains = width / 5;
+
+            for (int i = 0; i < numGrains; i++) {
+                int grainX = x + rand.nextInt(width);
+                int grainWidth = 1 + rand.nextInt(3);
+                int curve = 10 + rand.nextInt(20);
+
+                // Color randomly changes between light and dark
+                Color grainColor;
+                if (rand.nextBoolean()) {
+                    grainColor = new Color(
+                        Math.max(0, darkColor.getRed() - 20 - rand.nextInt(30)),
+                        Math.max(0, darkColor.getGreen() - 20 - rand.nextInt(30)),
+                        Math.max(0, darkColor.getBlue() - 20 - rand.nextInt(30)),
+                        50 + rand.nextInt(100)
+                    );
+                } else {
+                    grainColor = new Color(
+                        Math.min(255, lightColor.getRed() + 20 + rand.nextInt(30)),
+                        Math.min(255, lightColor.getGreen() + 20 + rand.nextInt(30)),
+                        Math.min(255, lightColor.getBlue() + 20 + rand.nextInt(30)),
+                        50 + rand.nextInt(100)
+                    );
+                }
+
+                g2d.setColor(grainColor);
+
+                // Use quadratic Bezier curves to create curved wood grain
+                for (int j = 0; j < height; j += 20 + rand.nextInt(40)) {
+                    int controlX = grainX + (rand.nextBoolean() ? curve : -curve);
+
+                    g2d.setStroke(new BasicStroke(grainWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                    g2d.drawLine(grainX - 2, y + j, grainX + 2, y + j + 20 + rand.nextInt(30));
+                }
+            }
+
+            // Restore composite mode and clipping region
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+            g2d.setClip(oldClip);
+
+            // Add gloss effect
+            GradientPaint shineGradient = new GradientPaint(
+                x, y, new Color(255, 255, 255, 30),
+                x, y + height/2, new Color(255, 255, 255, 0)
+            );
+            g2d.setPaint(shineGradient);
+            g2d.fillRect(x, y, width, height/2);
+        }
+
+        /**
+         * Draw the board border
+         */
+        private void drawBoardBorder(Graphics2D g2d, int x, int y, int width, int height) {
+            // Draw fine 3D border
+            g2d.setStroke(new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+
+            // Outer border - dark brown
+            g2d.setColor(new Color(100, 50, 20));
+            g2d.drawRect(x-2, y-2, width+4, height+4);
+
+            // Inner border - light brown
+            g2d.setColor(new Color(170, 120, 70));
+            g2d.drawRect(x, y, width, height);
+
+            // Border decorations - four corners
+            int cornerSize = 20;
+            drawCornerDecoration(g2d, x-2, y-2, cornerSize, 0); // Top left
+            drawCornerDecoration(g2d, x+width-cornerSize+2, y-2, cornerSize, 1); // Top right
+            drawCornerDecoration(g2d, x-2, y+height-cornerSize+2, cornerSize, 2); // Bottom left
+            drawCornerDecoration(g2d, x+width-cornerSize+2, y+height-cornerSize+2, cornerSize, 3); // Bottom right
+        }
+
+        /**
+         * Draw corner decorations for the board
+         */
+        private void drawCornerDecoration(Graphics2D g2d, int x, int y, int size, int corner) {
+            g2d.setStroke(new BasicStroke(2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            g2d.setColor(new Color(140, 80, 40));
+
+            int curve = size / 2;
+
+            switch (corner) {
+                case 0: // Top left
+                    g2d.drawArc(x, y, size, size, 0, 90);
+                    break;
+                case 1: // Top right
+                    g2d.drawArc(x-size, y, size, size, 0, 90);
+                    break;
+                case 2: // Bottom left
+                    g2d.drawArc(x, y-size, size, size, 270, 90);
+                    break;
+                case 3: // Bottom right
+                    g2d.drawArc(x-size, y-size, size, size, 180, 90);
+                    break;
+            }
+        }
+
+        /**
+         * Draw the board lines
+         */
+        private void drawBoardLines(Graphics2D g2d, int x, int y, int size) {
+            // Set line style
+            g2d.setColor(new Color(100, 50, 30, 180));
+
+            // Center cross
+            g2d.setStroke(new BasicStroke(2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            g2d.drawLine(x, y + size/2, x + size, y + size/2);
+            g2d.drawLine(x + size/2, y, x + size/2, y + size);
+
+            // Diagonal lines - dashed style
+            float[] dashPattern = {5, 3};
+            g2d.setStroke(new BasicStroke(1.5f, BasicStroke.CAP_ROUND,
+                                         BasicStroke.JOIN_ROUND, 10.0f, dashPattern, 0));
+            g2d.drawLine(x, y, x + size, y + size);
+            g2d.drawLine(x, y + size, x + size, y);
+        }
+
+        /**
+         * Draw all the points on the board
+         */
+        private void drawBoardPoints(Graphics2D g2d) {
+            // Get the points on the board
+            YutGame.BoardPoint[] boardPoints = game.getBoardPoints();
+
+            for (int i = 0; i < boardPoints.length; i++) {
+                YutGame.BoardPoint point = boardPoints[i];
+                if (point == null) continue;
+
+                // Highlight key positions with different colors
+                if (i == 0 || i == 29) {
+                    // Start and end points in gold
+                    drawBoardPoint(g2d, point, new Color(218, 165, 32), POINT_SIZE + 4, true);
+                } else if (i == 5 || i == 10 || i == 15) {
+                    // Corner points in brown
+                    drawBoardPoint(g2d, point, new Color(101, 67, 33), POINT_SIZE + 2, true);
+                } else if (i == 28) {
+                    // Center point in red
+                    drawBoardPoint(g2d, point, new Color(178, 34, 34), POINT_SIZE + 2, true);
+                } else {
+                    // Regular points in dark red-brown
+                    drawBoardPoint(g2d, point, new Color(120, 60, 30), POINT_SIZE, false);
+                }
+            }
+        }
+
+        /**
+         * Draw start and end markers
+         */
+        private void drawStartEndMarkers(Graphics2D g2d) {
+            g2d.setFont(new Font("Arial", Font.BOLD, 16));
+
+            // Draw start and end markers with large font and background color
+            drawTextWithBackground(g2d, "Start", 280, 535, Color.WHITE, new Color(178, 34, 34, 200));
+            drawTextWithBackground(g2d, "End", 380, 535, Color.WHITE, new Color(0, 100, 0, 200));
+        }
+
+        /**
+         * Draw player home areas
+         */
+        private void drawPlayerHomeAreas(Graphics2D g2d) {
+            drawHomeArea(g2d, game.getPlayers().get(0), 60, 460);
+
+            if (game.getPlayers().size() > 1) {
+                drawHomeArea(g2d, game.getPlayers().get(1), 720, 60);
+            }
+        }
+
+        /**
+         * Draw player home area
+         * @param g2d Graphics context
+         * @param player Player
+         * @param x X coordinate
+         * @param y Y coordinate
+         */
+        private void drawHomeArea(Graphics2D g2d, Player player, int x, int y) {
+            // Set home area size
+            int homeSize = 120;
+
+            // Create rounded rectangle area
+            RoundRectangle2D homeRect = new RoundRectangle2D.Double(
+                x, y, homeSize, homeSize, 20, 20);
+
+            // Create a lighter version of the player's color
+            Color playerColor = player.getColor();
+            Color lightPlayerColor = new Color(
+                Math.min(255, playerColor.getRed() + 140),
+                Math.min(255, playerColor.getGreen() + 140),
+                Math.min(255, playerColor.getBlue() + 140),
+                60
+            );
+
+            // Draw background - using gradient
+            GradientPaint gradient = new GradientPaint(
+                x, y, Color.WHITE,
+                x + homeSize, y + homeSize, lightPlayerColor,
+                false
+            );
+            g2d.setPaint(gradient);
+            g2d.fill(homeRect);
+
+            // Add wood texture effect
+            createWoodTexture(g2d, x, y, homeSize, homeSize,
+                             new Color(230, 220, 200, 120),
+                             new Color(200, 190, 170, 80));
+
+            // Draw border - current player gets a more prominent border
+            if (player == game.getCurrentPlayer()) {
+                // Glow border effect
+                g2d.setColor(new Color(playerColor.getRed(),
+                                       playerColor.getGreen(),
+                                       playerColor.getBlue(),
+                                       150));
+                g2d.setStroke(new BasicStroke(4));
+                g2d.draw(homeRect);
+
+                // Add glowing effect
+                g2d.setColor(new Color(playerColor.getRed(),
+                                       playerColor.getGreen(),
+                                       playerColor.getBlue(),
+                                       60));
+                g2d.setStroke(new BasicStroke(8));
+                g2d.draw(homeRect);
             } else {
-                grainColor = new Color(
-                    Math.min(255, lightColor.getRed() + 20 + rand.nextInt(30)),
-                    Math.min(255, lightColor.getGreen() + 20 + rand.nextInt(30)),
-                    Math.min(255, lightColor.getBlue() + 20 + rand.nextInt(30)),
-                    50 + rand.nextInt(100)
-                );
+                // Non-current player gets a lighter border
+                g2d.setColor(new Color(playerColor.getRed(),
+                                       playerColor.getGreen(),
+                                       playerColor.getBlue(),
+                                       120));
+                g2d.setStroke(new BasicStroke(2));
+                g2d.draw(homeRect);
             }
-            
-            g2d.setColor(grainColor);
-            
-            // Use quadratic Bezier curves to create curved wood grain
-            for (int j = 0; j < height; j += 20 + rand.nextInt(40)) {
-                int controlX = grainX + (rand.nextBoolean() ? curve : -curve);
-                
-                g2d.setStroke(new BasicStroke(grainWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-                g2d.drawLine(grainX - 2, y + j, grainX + 2, y + j + 20 + rand.nextInt(30));
+
+            // Draw player label
+            String label = player.getName() + " Home";
+            g2d.setFont(new Font("Arial", Font.BOLD, 16));
+            FontMetrics fm = g2d.getFontMetrics();
+            int textWidth = fm.stringWidth(label);
+
+            // Create label rectangle
+            RoundRectangle2D labelRect = new RoundRectangle2D.Double(
+                x + homeSize/2 - textWidth/2 - 8,
+                y - 25,
+                textWidth + 16,
+                25,
+                10,
+                10
+            );
+
+            // Draw label background
+            GradientPaint labelGradient = new GradientPaint(
+                x, y - 25, new Color(255, 255, 255, 220),
+                x, y, playerColor,
+                false
+            );
+            g2d.setPaint(labelGradient);
+            g2d.fill(labelRect);
+
+            // Draw label border
+            g2d.setColor(playerColor.darker());
+            g2d.setStroke(new BasicStroke(1));
+            g2d.draw(labelRect);
+
+            // Draw label text
+            g2d.setColor(new Color(50, 50, 50));
+            g2d.drawString(label, x + homeSize/2 - textWidth/2, y - 8);
+
+            // If it's the current player, add additional indicator
+            if (player == game.getCurrentPlayer()) {
+                int indicatorSize = 8;
+                int[] xPoints = {x + homeSize/2 - indicatorSize, x + homeSize/2, x + homeSize/2 + indicatorSize};
+                int[] yPoints = {y - 30, y - 25, y - 30};
+                g2d.setColor(playerColor.darker());
+                g2d.fillPolygon(xPoints, yPoints, 3);
             }
         }
-        
-        // Restore composite mode and clipping region
-        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-        g2d.setClip(oldClip);
-        
-        // Add gloss effect
-        GradientPaint shineGradient = new GradientPaint(
-            x, y, new Color(255, 255, 255, 30),
-            x, y + height/2, new Color(255, 255, 255, 0)
-        );
-        g2d.setPaint(shineGradient);
-        g2d.fillRect(x, y, width, height/2);
-    }
-    
-    /**
-     * Draw the board border
-     */
-    private void drawBoardBorder(Graphics2D g2d, int x, int y, int width, int height) {
-        // Draw fine 3D border
-        g2d.setStroke(new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-        
-        // Outer border - dark brown
-        g2d.setColor(new Color(100, 50, 20));
-        g2d.drawRect(x-2, y-2, width+4, height+4);
-        
-        // Inner border - light brown
-        g2d.setColor(new Color(170, 120, 70));
-        g2d.drawRect(x, y, width, height);
-        
-        // Border decorations - four corners
-        int cornerSize = 20;
-        drawCornerDecoration(g2d, x-2, y-2, cornerSize, 0); // Top left
-        drawCornerDecoration(g2d, x+width-cornerSize+2, y-2, cornerSize, 1); // Top right
-        drawCornerDecoration(g2d, x-2, y+height-cornerSize+2, cornerSize, 2); // Bottom left
-        drawCornerDecoration(g2d, x+width-cornerSize+2, y+height-cornerSize+2, cornerSize, 3); // Bottom right
-    }
-    
-    /**
-     * Draw corner decorations for the board
-     */
-    private void drawCornerDecoration(Graphics2D g2d, int x, int y, int size, int corner) {
-        g2d.setStroke(new BasicStroke(2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-        g2d.setColor(new Color(140, 80, 40));
-        
-        int curve = size / 2;
-        
-        switch (corner) {
-            case 0: // Top left
-                g2d.drawArc(x, y, size, size, 0, 90);
-                break;
-            case 1: // Top right
-                g2d.drawArc(x-size, y, size, size, 0, 90);
-                break;
-            case 2: // Bottom left
-                g2d.drawArc(x, y-size, size, size, 270, 90);
-                break;
-            case 3: // Bottom right
-                g2d.drawArc(x-size, y-size, size, size, 180, 90);
-                break;
+
+        /**
+         * Draw points on the board
+         */
+        private void drawBoardPoint(Graphics2D g2d, YutGame.BoardPoint point, Color color, int size, boolean highlight) {
+            int x = point.getX();
+            int y = point.getY();
+
+            // Draw shadow for the point
+            if (highlight) {
+                g2d.setColor(new Color(0, 0, 0, 80));
+                g2d.fill(new Ellipse2D.Double(x - size/2 + 2, y - size/2 + 2, size, size));
+            }
+
+            // Draw the point
+            g2d.setColor(color);
+            g2d.fill(new Ellipse2D.Double(x - size/2, y - size/2, size, size));
+
+            // Draw point border
+            g2d.setColor(Color.WHITE);
+            g2d.draw(new Ellipse2D.Double(x - size/2, y - size/2, size, size));
+
+            // If it's a highlighted point, add inner ring
+            if (highlight) {
+                g2d.setColor(new Color(255, 255, 255, 120));
+                g2d.draw(new Ellipse2D.Double(x - size/4, y - size/4, size/2, size/2));
+            }
         }
-    }
-    
-    /**
-     * Draw the board lines
-     */
-    private void drawBoardLines(Graphics2D g2d, int x, int y, int size) {
-        // Set line style
-        g2d.setColor(new Color(100, 50, 30, 180));
-        
-        // Center cross
-        g2d.setStroke(new BasicStroke(2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-        g2d.drawLine(x, y + size/2, x + size, y + size/2);
-        g2d.drawLine(x + size/2, y, x + size/2, y + size);
-        
-        // Diagonal lines - dashed style
-        float[] dashPattern = {5, 3};
-        g2d.setStroke(new BasicStroke(1.5f, BasicStroke.CAP_ROUND, 
-                                     BasicStroke.JOIN_ROUND, 10.0f, dashPattern, 0));
-        g2d.drawLine(x, y, x + size, y + size);
-        g2d.drawLine(x, y + size, x + size, y);
-    }
-    
-    /**
-     * Draw all the points on the board
-     */
-    private void drawBoardPoints(Graphics2D g2d) {
-        // Get the points on the board
-        YutGame.BoardPoint[] boardPoints = game.getBoardPoints();
-        
-        for (int i = 0; i < boardPoints.length; i++) {
-            YutGame.BoardPoint point = boardPoints[i];
-            if (point == null) continue;
-            
-            // Highlight key positions with different colors
-            if (i == 0 || i == 29) {
-                // Start and end points in gold
-                drawBoardPoint(g2d, point, new Color(218, 165, 32), POINT_SIZE + 4, true);
-            } else if (i == 5 || i == 10 || i == 15) {
-                // Corner points in brown
-                drawBoardPoint(g2d, point, new Color(101, 67, 33), POINT_SIZE + 2, true);
-            } else if (i == 28) {
-                // Center point in red
-                drawBoardPoint(g2d, point, new Color(178, 34, 34), POINT_SIZE + 2, true);
+
+        /**
+         * Draw text with background color
+         */
+        private void drawTextWithBackground(Graphics2D g2d, String text, int x, int y, Color textColor, Color bgColor) {
+            FontMetrics fm = g2d.getFontMetrics();
+            int textWidth = fm.stringWidth(text);
+            int textHeight = fm.getHeight();
+
+            // Draw background rectangle
+            g2d.setColor(bgColor);
+            g2d.fillRoundRect(x - 5, y - textHeight + 5, textWidth + 10, textHeight, 10, 10);
+
+            // Draw text
+            g2d.setColor(textColor);
+            g2d.drawString(text, x, y);
+        }
+
+        /**
+         * Draw all pieces
+         * @param g2d Graphics context
+         */
+        private void drawPieces(Graphics2D g2d) {
+            // Draw pieces on the board
+            YutGame.BoardPoint[] boardPoints = game.getBoardPoints();
+
+            for (int i = 0; i < boardPoints.length; i++) {
+                YutGame.BoardPoint point = boardPoints[i];
+                if (point == null) continue;
+
+                List<Piece> piecesAtPoint = point.getPieces();
+                if (piecesAtPoint.isEmpty()) continue;
+
+                // Piece offset for displaying multiple pieces on the same point
+                int offsetX = 0;
+                int offsetY = 0;
+
+                for (Piece piece : piecesAtPoint) {
+                    drawPiece(g2d, piece, point.getX() + offsetX, point.getY() + offsetY);
+
+                    // Adjust offset for next piece
+                    offsetX += 10;
+                    offsetY += 10;
+                    if (offsetX > 30) { // Prevent excessive offset
+                        offsetX = 0;
+                        offsetY = 0;
+                    }
+                }
+            }
+
+            // Draw pieces in home area
+            for (Player player : game.getPlayers()) {
+                List<Piece> homePieces = player.getHomePieces();
+
+                if (homePieces.isEmpty()) continue;
+
+                // Home position (top-left and bottom-right)
+                int homeX, homeY;
+                if (player == game.getPlayers().get(0)) {
+                    homeX = 100;
+                    homeY = 500;
+                } else {
+                    homeX = 700;
+                    homeY = 100;
+                }
+
+                int offsetX = 0;
+                int offsetY = 0;
+
+                for (Piece piece : homePieces) {
+                    drawPiece(g2d, piece, homeX + offsetX, homeY + offsetY);
+
+                    offsetX += 15;
+                    offsetY += 15;
+                }
+            }
+        }
+
+        /**
+         * Draw a single piece
+         * @param g2d Graphics context
+         * @param piece Piece
+         * @param x X coordinate
+         * @param y Y coordinate
+         */
+        private void drawPiece(Graphics2D g2d, Piece piece, int x, int y) {
+            // Save original transformation
+            AffineTransform originalTransform = g2d.getTransform();
+
+            // Set high-quality rendering
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            // Check if it is the selected piece, if yes, add slight floating animation effect
+            boolean isSelected = (piece == selectedPiece);
+            int yOffset = 0;
+
+            if (isSelected) {
+                // Create slight floating effect
+                long time = System.currentTimeMillis() % 1000;
+                yOffset = -2 - (int)(Math.sin(time * Math.PI / 500) * 3);
+            }
+
+            // Draw shadow
+            drawPieceShadow(g2d, x, y - yOffset);
+
+            // Create base color and darker color version for the piece
+            Color baseColor = piece.getColor();
+            Color lighterColor = new Color(
+                Math.min(255, baseColor.getRed() + 50),
+                Math.min(255, baseColor.getGreen() + 50),
+                Math.min(255, baseColor.getBlue() + 50)
+            );
+            Color darkerColor = new Color(
+                Math.max(0, baseColor.getRed() - 70),
+                Math.max(0, baseColor.getGreen() - 70),
+                Math.max(0, baseColor.getBlue() - 70)
+            );
+
+            // Draw basic piece shape - 3D sphere effect
+            drawPieceSphere(g2d, x, y + yOffset, PIECE_SIZE, baseColor, lighterColor, darkerColor);
+
+            // Draw piece ID marker
+            drawPieceId(g2d, piece, x, y + yOffset);
+
+            // If it's the selected piece, add selection effect
+            if (isSelected) {
+                drawSelectionEffect(g2d, x, y + yOffset);
+            }
+
+            // Restore original transformation
+            g2d.setTransform(originalTransform);
+        }
+        /**
+         * Draw the piece shadow
+         */
+        private void drawPieceShadow(Graphics2D g2d, int x, int y) {
+            // Draw the oval shadow
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
+            g2d.setColor(new Color(0, 0, 0, 120));
+            g2d.fillOval(x - PIECE_SIZE/2 - 2, y - PIECE_SIZE/4 + 2,
+                          PIECE_SIZE + 4, PIECE_SIZE/2 + 2);
+            g2d.setComposite(AlphaComposite.SrcOver);
+        }
+
+        /**
+         * Draw a 3D sphere effect for the piece
+         */
+        private void drawPieceSphere(Graphics2D g2d, int x, int y, int size,
+                                      Color baseColor, Color lighterColor, Color darkerColor) {
+            // Create the sphere gradient
+            float radius = size / 2.0f;
+
+            // Use a regular GradientPaint instead of RadialGradientPaint
+            GradientPaint gradient = new GradientPaint(
+                x - size/4, y - size/4, lighterColor,
+                x + size/2, y + size/2, darkerColor,
+                false);
+
+            // Draw the sphere
+            g2d.setPaint(gradient);
+            Ellipse2D sphere = new Ellipse2D.Double(x - radius, y - radius, size, size);
+            g2d.fill(sphere);
+
+            // Add edge highlight to enhance the 3D effect
+            g2d.setColor(new Color(255, 255, 255, 100));
+            g2d.setStroke(new BasicStroke(1.0f));
+            g2d.draw(sphere);
+
+            // Add a small highlight spot
+            int highlightSize = size / 5;
+            g2d.setColor(new Color(255, 255, 255, 160));
+            g2d.fill(new Ellipse2D.Double(
+                x - radius/2 - highlightSize/2,
+                y - radius/2 - highlightSize/2,
+                highlightSize, highlightSize));
+        }
+
+        /**
+         * Draw the piece ID marker
+         */
+        private void drawPieceId(Graphics2D g2d, Piece piece, int x, int y) {
+            // Create the ID marker background
+            int idSize = (int)(PIECE_SIZE * 0.65);
+
+            // Create a white background circle
+            g2d.setColor(Color.WHITE);
+            g2d.fill(new Ellipse2D.Double(x - idSize/2, y - idSize/2, idSize, idSize));
+
+            // Border
+            g2d.setColor(new Color(100, 100, 100, 150));
+            g2d.setStroke(new BasicStroke(0.8f));
+            g2d.draw(new Ellipse2D.Double(x - idSize/2, y - idSize/2, idSize, idSize));
+
+            // Draw the ID number, using the piece's owner color
+            g2d.setFont(new Font("Arial", Font.BOLD, 12));
+            FontMetrics fm = g2d.getFontMetrics();
+            String idStr = String.valueOf(piece.getId());
+            int textWidth = fm.stringWidth(idStr);
+            int textHeight = fm.getAscent();
+
+            // Use a darker version of the owner's color as the text color
+            Color textColor = new Color(
+                Math.max(0, piece.getColor().getRed() - 40),
+                Math.max(0, piece.getColor().getGreen() - 40),
+                Math.max(0, piece.getColor().getBlue() - 40)
+            );
+
+            g2d.setColor(textColor);
+            g2d.drawString(idStr, x - textWidth/2, y + textHeight/2 - 1);
+        }
+
+        /**
+         * Draw the piece selection effect
+         */
+        private void drawSelectionEffect(Graphics2D g2d, int x, int y) {
+            // Dynamic pulse effect
+            long time = System.currentTimeMillis() % 2000;
+            float alpha = 0.4f + 0.4f * (float)Math.sin(time * Math.PI / 1000);
+
+            // Create the outer glow effect
+            int glowSize = PIECE_SIZE + 10;
+            Color glowColor = new Color(255, 223, 0, (int)(180 * alpha));
+
+            // Use a simple ellipse and semi-transparent color
+            g2d.setColor(glowColor);
+            g2d.fill(new Ellipse2D.Double(x - glowSize/2, y - glowSize/2, glowSize, glowSize));
+
+            // Dynamic selection indicator
+            g2d.setColor(new Color(255, 223, 0, 200));
+            g2d.setStroke(new BasicStroke(2.0f));
+
+            double angleDelta = time / 500.0 * Math.PI;
+            for (int i = 0; i < 4; i++) {
+                double angle = angleDelta + i * Math.PI / 2;
+                int dotX = (int)(x + Math.cos(angle) * (PIECE_SIZE/2 + 4));
+                int dotY = (int)(y + Math.sin(angle) * (PIECE_SIZE/2 + 4));
+
+                g2d.fill(new Ellipse2D.Double(dotX - 3, dotY - 3, 6, 6));
+            }
+        }
+
+        /**
+         * Highlight the selected piece
+         */
+            private void highlightSelectedPiece(Graphics2D g2d) {
+            if (selectedPiece == null) return;
+
+            // Get the selected piece's position
+            int position = selectedPiece.getPosition();
+            int x = 0, y = 0;
+
+            if (selectedPiece.isHome()) {
+                // If the piece is at home
+                Player owner = selectedPiece.getOwner();
+                if (owner == game.getPlayers().get(0)) {
+                    x = 100;
+                    y = 500;
+                } else {
+                    x = 700;
+                    y = 100;
+                }
+
+                // Adjust the position based on the piece's ID
+                x += selectedPiece.getId() * 15;
+                y += selectedPiece.getId() * 15;
             } else {
-                // Regular points in dark red-brown
-                drawBoardPoint(g2d, point, new Color(120, 60, 30), POINT_SIZE, false);
+                // Piece on the board
+                YutGame.BoardPoint point = game.getBoardPoint(position);
+                if (point != null) {
+                    x = point.getX();
+                    y = point.getY();
+
+                    // If there are multiple pieces at the point, find this piece's position
+                    List<Piece> piecesAtPoint = point.getPieces();
+                    int index = piecesAtPoint.indexOf(selectedPiece);
+                    if (index > 0) {
+                        x += index * 10;
+                        y += index * 10;
+                    }
+                }
             }
+
+            // Draw possible move paths
+            drawPossibleMove(g2d, x, y);
         }
-    }
-    
-   /**
- * Draw start and end markers
- */
-private void drawStartEndMarkers(Graphics2D g2d) {
-    g2d.setFont(new Font("Arial", Font.BOLD, 16));
-    
-    // Draw start and end markers with large font and background color
-    drawTextWithBackground(g2d, "Start", 280, 535, Color.WHITE, new Color(178, 34, 34, 200));
-    drawTextWithBackground(g2d, "End", 380, 535, Color.WHITE, new Color(0, 100, 0, 200));
-}
-
-/**
- * Draw player home areas
- */
-private void drawPlayerHomeAreas(Graphics2D g2d) {
-    drawHomeArea(g2d, game.getPlayers().get(0), 60, 460);
-    
-    if (game.getPlayers().size() > 1) {
-        drawHomeArea(g2d, game.getPlayers().get(1), 720, 60);
-    }
-}
-
-/**
- * Draw player home area
- * @param g2d Graphics context
- * @param player Player
- * @param x X coordinate
- * @param y Y coordinate
- */
-private void drawHomeArea(Graphics2D g2d, Player player, int x, int y) {
-    // Set home area size
-    int homeSize = 120;
-    
-    // Create rounded rectangle area
-    RoundRectangle2D homeRect = new RoundRectangle2D.Double(
-        x, y, homeSize, homeSize, 20, 20);
-    
-    // Create a lighter version of the player's color
-    Color playerColor = player.getColor();
-    Color lightPlayerColor = new Color(
-        Math.min(255, playerColor.getRed() + 140),
-        Math.min(255, playerColor.getGreen() + 140),
-        Math.min(255, playerColor.getBlue() + 140),
-        60
-    );
-    
-    // Draw background - using gradient
-    GradientPaint gradient = new GradientPaint(
-        x, y, Color.WHITE,
-        x + homeSize, y + homeSize, lightPlayerColor,
-        false
-    );
-    g2d.setPaint(gradient);
-    g2d.fill(homeRect);
-    
-    // Add wood texture effect
-    createWoodTexture(g2d, x, y, homeSize, homeSize, 
-                     new Color(230, 220, 200, 120), 
-                     new Color(200, 190, 170, 80));
-    
-    // Draw border - current player gets a more prominent border
-    if (player == game.getCurrentPlayer()) {
-        // Glow border effect
-        g2d.setColor(new Color(playerColor.getRed(), 
-                               playerColor.getGreen(), 
-                               playerColor.getBlue(), 
-                               150));
-        g2d.setStroke(new BasicStroke(4));
-        g2d.draw(homeRect);
-        
-        // Add glowing effect
-        g2d.setColor(new Color(playerColor.getRed(), 
-                               playerColor.getGreen(), 
-                               playerColor.getBlue(), 
-                               60));
-        g2d.setStroke(new BasicStroke(8));
-        g2d.draw(homeRect);
-    } else {
-        // Non-current player gets a lighter border
-        g2d.setColor(new Color(playerColor.getRed(), 
-                               playerColor.getGreen(), 
-                               playerColor.getBlue(), 
-                               120));
-        g2d.setStroke(new BasicStroke(2));
-        g2d.draw(homeRect);
-    }
-    
-    // Draw player label
-    String label = player.getName() + " Home";
-    g2d.setFont(new Font("Arial", Font.BOLD, 16));
-    FontMetrics fm = g2d.getFontMetrics();
-    int textWidth = fm.stringWidth(label);
-    
-    // Create label rectangle
-    RoundRectangle2D labelRect = new RoundRectangle2D.Double(
-        x + homeSize/2 - textWidth/2 - 8, 
-        y - 25, 
-        textWidth + 16, 
-        25, 
-        10, 
-        10
-    );
-    
-    // Draw label background
-    GradientPaint labelGradient = new GradientPaint(
-        x, y - 25, new Color(255, 255, 255, 220),
-        x, y, playerColor,
-        false
-    );
-    g2d.setPaint(labelGradient);
-    g2d.fill(labelRect);
-    
-    // Draw label border
-    g2d.setColor(playerColor.darker());
-    g2d.setStroke(new BasicStroke(1));
-    g2d.draw(labelRect);
-    
-    // Draw label text
-    g2d.setColor(new Color(50, 50, 50));
-    g2d.drawString(label, x + homeSize/2 - textWidth/2, y - 8);
-    
-    // If it's the current player, add additional indicator
-    if (player == game.getCurrentPlayer()) {
-        int indicatorSize = 8;
-        int[] xPoints = {x + homeSize/2 - indicatorSize, x + homeSize/2, x + homeSize/2 + indicatorSize};
-        int[] yPoints = {y - 30, y - 25, y - 30};
-        g2d.setColor(playerColor.darker());
-        g2d.fillPolygon(xPoints, yPoints, 3);
-    }
-}
-
-/**
- * Draw points on the board
- */
-private void drawBoardPoint(Graphics2D g2d, YutGame.BoardPoint point, Color color, int size, boolean highlight) {
-    int x = point.getX();
-    int y = point.getY();
-    
-    // Draw shadow for the point
-    if (highlight) {
-        g2d.setColor(new Color(0, 0, 0, 80));
-        g2d.fill(new Ellipse2D.Double(x - size/2 + 2, y - size/2 + 2, size, size));
-    }
-    
-    // Draw the point
-    g2d.setColor(color);
-    g2d.fill(new Ellipse2D.Double(x - size/2, y - size/2, size, size));
-    
-    // Draw point border
-    g2d.setColor(Color.WHITE);
-    g2d.draw(new Ellipse2D.Double(x - size/2, y - size/2, size, size));
-    
-    // If it's a highlighted point, add inner ring
-    if (highlight) {
-        g2d.setColor(new Color(255, 255, 255, 120));
-        g2d.draw(new Ellipse2D.Double(x - size/4, y - size/4, size/2, size/2));
-    }
-}
-
-/**
- * Draw text with background color
- */
-private void drawTextWithBackground(Graphics2D g2d, String text, int x, int y, Color textColor, Color bgColor) {
-    FontMetrics fm = g2d.getFontMetrics();
-    int textWidth = fm.stringWidth(text);
-    int textHeight = fm.getHeight();
-    
-    // Draw background rectangle
-    g2d.setColor(bgColor);
-    g2d.fillRoundRect(x - 5, y - textHeight + 5, textWidth + 10, textHeight, 10, 10);
-    
-    // Draw text
-    g2d.setColor(textColor);
-    g2d.drawString(text, x, y);
-}
-
-/**
- * Draw all pieces
- * @param g2d Graphics context
- */
-private void drawPieces(Graphics2D g2d) {
-    // Draw pieces on the board
-    YutGame.BoardPoint[] boardPoints = game.getBoardPoints();
-    
-    for (int i = 0; i < boardPoints.length; i++) {
-        YutGame.BoardPoint point = boardPoints[i];
-        if (point == null) continue;
-        
-        List<Piece> piecesAtPoint = point.getPieces();
-        if (piecesAtPoint.isEmpty()) continue;
-        
-        // Piece offset for displaying multiple pieces on the same point
-        int offsetX = 0;
-        int offsetY = 0;
-        
-        for (Piece piece : piecesAtPoint) {
-            drawPiece(g2d, piece, point.getX() + offsetX, point.getY() + offsetY);
-            
-            // Adjust offset for next piece
-            offsetX += 10;
-            offsetY += 10;
-            if (offsetX > 30) { // Prevent excessive offset
-                offsetX = 0;
-                offsetY = 0;
-            }
-        }
-    }
-    
-    // Draw pieces in home area
-    for (Player player : game.getPlayers()) {
-        List<Piece> homePieces = player.getHomePieces();
-        
-        if (homePieces.isEmpty()) continue;
-        
-        // Home position (top-left and bottom-right)
-        int homeX, homeY;
-        if (player == game.getPlayers().get(0)) {
-            homeX = 100;
-            homeY = 500;
-        } else {
-            homeX = 700;
-            homeY = 100;
-        }
-        
-        int offsetX = 0;
-        int offsetY = 0;
-        
-        for (Piece piece : homePieces) {
-            drawPiece(g2d, piece, homeX + offsetX, homeY + offsetY);
-            
-            offsetX += 15;
-            offsetY += 15;
-        }
-    }
-}
-
-/**
- * Draw a single piece
- * @param g2d Graphics context
- * @param piece Piece
- * @param x X coordinate
- * @param y Y coordinate
- */
-private void drawPiece(Graphics2D g2d, Piece piece, int x, int y) {
-    // Save original transformation
-    AffineTransform originalTransform = g2d.getTransform();
-    
-    // Set high-quality rendering
-    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-    
-    // Check if it is the selected piece, if yes, add slight floating animation effect
-    boolean isSelected = (piece == selectedPiece);
-    int yOffset = 0;
-    
-    if (isSelected) {
-        // Create slight floating effect
-        long time = System.currentTimeMillis() % 1000;
-        yOffset = -2 - (int)(Math.sin(time * Math.PI / 500) * 3);
-    }
-    
-    // Draw shadow
-    drawPieceShadow(g2d, x, y - yOffset);
-    
-    // Create base color and darker color version for the piece
-    Color baseColor = piece.getColor();
-    Color lighterColor = new Color(
-        Math.min(255, baseColor.getRed() + 50),
-        Math.min(255, baseColor.getGreen() + 50),
-        Math.min(255, baseColor.getBlue() + 50)
-    );
-    Color darkerColor = new Color(
-        Math.max(0, baseColor.getRed() - 70),
-        Math.max(0, baseColor.getGreen() - 70),
-        Math.max(0, baseColor.getBlue() - 70)
-    );
-    
-    // Draw basic piece shape - 3D sphere effect
-    drawPieceSphere(g2d, x, y + yOffset, PIECE_SIZE, baseColor, lighterColor, darkerColor);
-    
-    // Draw piece ID marker
-    drawPieceId(g2d, piece, x, y + yOffset);
-    
-    // If it's the selected piece, add selection effect
-    if (isSelected) {
-        drawSelectionEffect(g2d, x, y + yOffset);
-    }
-    
-    // Restore original transformation
-    g2d.setTransform(originalTransform);
-}
-/**
- * Draw the piece shadow
- */
-private void drawPieceShadow(Graphics2D g2d, int x, int y) {
-    // Draw the oval shadow
-    g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
-    g2d.setColor(new Color(0, 0, 0, 120));
-    g2d.fillOval(x - PIECE_SIZE/2 - 2, y - PIECE_SIZE/4 + 2, 
-                  PIECE_SIZE + 4, PIECE_SIZE/2 + 2);
-    g2d.setComposite(AlphaComposite.SrcOver);
-}
-
-/**
- * Draw a 3D sphere effect for the piece
- */
-private void drawPieceSphere(Graphics2D g2d, int x, int y, int size, 
-                              Color baseColor, Color lighterColor, Color darkerColor) {
-    // Create the sphere gradient
-    float radius = size / 2.0f;
-    
-    // Use a regular GradientPaint instead of RadialGradientPaint
-    GradientPaint gradient = new GradientPaint(
-        x - size/4, y - size/4, lighterColor,
-        x + size/2, y + size/2, darkerColor,
-        false);
-    
-    // Draw the sphere
-    g2d.setPaint(gradient);
-    Ellipse2D sphere = new Ellipse2D.Double(x - radius, y - radius, size, size);
-    g2d.fill(sphere);
-    
-    // Add edge highlight to enhance the 3D effect
-    g2d.setColor(new Color(255, 255, 255, 100));
-    g2d.setStroke(new BasicStroke(1.0f));
-    g2d.draw(sphere);
-    
-    // Add a small highlight spot
-    int highlightSize = size / 5;
-    g2d.setColor(new Color(255, 255, 255, 160));
-    g2d.fill(new Ellipse2D.Double(
-        x - radius/2 - highlightSize/2, 
-        y - radius/2 - highlightSize/2,
-        highlightSize, highlightSize));
-}
-
-/**
- * Draw the piece ID marker
- */
-private void drawPieceId(Graphics2D g2d, Piece piece, int x, int y) {
-    // Create the ID marker background
-    int idSize = (int)(PIECE_SIZE * 0.65);
-    
-    // Create a white background circle
-    g2d.setColor(Color.WHITE);
-    g2d.fill(new Ellipse2D.Double(x - idSize/2, y - idSize/2, idSize, idSize));
-    
-    // Border
-    g2d.setColor(new Color(100, 100, 100, 150));
-    g2d.setStroke(new BasicStroke(0.8f));
-    g2d.draw(new Ellipse2D.Double(x - idSize/2, y - idSize/2, idSize, idSize));
-    
-    // Draw the ID number, using the piece's owner color
-    g2d.setFont(new Font("Arial", Font.BOLD, 12));
-    FontMetrics fm = g2d.getFontMetrics();
-    String idStr = String.valueOf(piece.getId());
-    int textWidth = fm.stringWidth(idStr);
-    int textHeight = fm.getAscent();
-    
-    // Use a darker version of the owner's color as the text color
-    Color textColor = new Color(
-        Math.max(0, piece.getColor().getRed() - 40),
-        Math.max(0, piece.getColor().getGreen() - 40),
-        Math.max(0, piece.getColor().getBlue() - 40)
-    );
-    
-    g2d.setColor(textColor);
-    g2d.drawString(idStr, x - textWidth/2, y + textHeight/2 - 1);
-}
-
-/**
- * Draw the piece selection effect
- */
-private void drawSelectionEffect(Graphics2D g2d, int x, int y) {
-    // Dynamic pulse effect
-    long time = System.currentTimeMillis() % 2000;
-    float alpha = 0.4f + 0.4f * (float)Math.sin(time * Math.PI / 1000);
-    
-    // Create the outer glow effect
-    int glowSize = PIECE_SIZE + 10;
-    Color glowColor = new Color(255, 223, 0, (int)(180 * alpha));
-    
-    // Use a simple ellipse and semi-transparent color
-    g2d.setColor(glowColor);
-    g2d.fill(new Ellipse2D.Double(x - glowSize/2, y - glowSize/2, glowSize, glowSize));
-    
-    // Dynamic selection indicator
-    g2d.setColor(new Color(255, 223, 0, 200));
-    g2d.setStroke(new BasicStroke(2.0f));
-    
-    double angleDelta = time / 500.0 * Math.PI;
-    for (int i = 0; i < 4; i++) {
-        double angle = angleDelta + i * Math.PI / 2;
-        int dotX = (int)(x + Math.cos(angle) * (PIECE_SIZE/2 + 4));
-        int dotY = (int)(y + Math.sin(angle) * (PIECE_SIZE/2 + 4));
-        
-        g2d.fill(new Ellipse2D.Double(dotX - 3, dotY - 3, 6, 6));
-    }
-}
-
-/**
- * Highlight the selected piece
- */
-private void highlightSelectedPiece(Graphics2D g2d) {
-    if (selectedPiece == null) return;
-    
-    // Get the selected piece's position
-    int position = selectedPiece.getPosition();
-    int x = 0, y = 0;
-    
-    if (selectedPiece.isHome()) {
-        // If the piece is at home
-        Player owner = selectedPiece.getOwner();
-        if (owner == game.getPlayers().get(0)) {
-            x = 100;
-            y = 500;
-        } else {
-            x = 700;
-            y = 100;
-        }
-        
-        // Adjust the position based on the piece's ID
-        x += selectedPiece.getId() * 15;
-        y += selectedPiece.getId() * 15;
-    } else {
-        // Piece on the board
-        YutGame.BoardPoint point = game.getBoardPoint(position);
-        if (point != null) {
-            x = point.getX();
-            y = point.getY();
-            
-            // If there are multiple pieces at the point, find this piece's position
-            List<Piece> piecesAtPoint = point.getPieces();
-            int index = piecesAtPoint.indexOf(selectedPiece);
-            if (index > 0) {
-                x += index * 10;
-                y += index * 10;
-            }
-        }
-    }
-    
-    // Draw possible move paths
-    drawPossibleMove(g2d, x, y);
-}
-/**
- * Draw possible movement path
- */
-private void drawPossibleMove(Graphics2D g2d, int startX, int startY) {
+        /**
+        * Draw possible movement path
+        */
+        private void drawPossibleMove(Graphics2D g2d, int startX, int startY) {
     if (selectedPiece == null || game.getLastResult() == null) return;
     
     // Get the step count from the current throw result
@@ -1609,10 +1609,10 @@ private void drawPossibleMove(Graphics2D g2d, int startX, int startY) {
     }
 }
 
-/**
- * Draw movement arrow
- */
-private void drawMovementArrow(Graphics2D g2d, int startX, int startY, int endX, int endY) {
+        /**
+         * Draw movement arrow
+         */
+        private void drawMovementArrow(Graphics2D g2d, int startX, int startY, int endX, int endY) {
     // Set arrow style
     g2d.setColor(new Color(255, 215, 0, 120));
     g2d.setStroke(new BasicStroke(3.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 
@@ -1655,10 +1655,10 @@ private void drawMovementArrow(Graphics2D g2d, int startX, int startY, int endX,
     g2d.drawPolygon(xPoints, yPoints, 3);
 }
 
-/**
- * Draw highlight effect for the target point
- */
-private void drawTargetHighlight(Graphics2D g2d, int x, int y) {
+        /**
+        * Draw highlight effect for the target point
+        */
+        private void drawTargetHighlight(Graphics2D g2d, int x, int y) {
     // Create pulsating effect
     long time = System.currentTimeMillis() % 1500;
     float scale = 0.8f + 0.4f * (float)Math.sin(time * Math.PI / 750);
@@ -1685,11 +1685,11 @@ private void drawTargetHighlight(Graphics2D g2d, int x, int y) {
     ));
 }
 
-/**
- * Draw Yut sticks
- * @param g2d graphics context
- */
-private void drawYutSticks(Graphics2D g2d) {
+        /**
+        * Draw Yut sticks
+        * @param g2d graphics context
+        */
+        private void drawYutSticks(Graphics2D g2d) {
     // Get Yut stick states - use animation state if animating
     YutStick[] sticks = isAnimating ? animatingSticks : game.getYutSet().getSticks();
     

@@ -1,4 +1,4 @@
-package src.main.java.com.xingyang;
+package com.xingyang;
 
 /**
  * A dice stick used in the Yut game (one of the four sticks)

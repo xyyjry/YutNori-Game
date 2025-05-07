@@ -1,4 +1,4 @@
-package src.main.java.com.xingyang;
+package com.xingyang;
 
 import java.awt.Color;
 
