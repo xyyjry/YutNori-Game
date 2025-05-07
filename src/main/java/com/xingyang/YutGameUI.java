@@ -1121,7 +1121,7 @@ public class YutGameUI extends JFrame {
                 if (point == null) continue;
 
                 // Highlight key positions with different colors
-                if (i == 0 || i == 29) {
+                if (i == 0 || i == 30) {
                     // Start and end points in gold
                     drawBoardPoint(g2d, point, new Color(218, 165, 32), POINT_SIZE + 4, true);
                 } else if (i == 5 || i == 10 || i == 15) {
@@ -1144,8 +1144,7 @@ public class YutGameUI extends JFrame {
             g2d.setFont(new Font("Arial", Font.BOLD, 16));
 
             // Draw start and end markers with large font and background color
-            drawTextWithBackground(g2d, "Start", 280, 535, Color.WHITE, new Color(178, 34, 34, 200));
-            drawTextWithBackground(g2d, "End", 380, 535, Color.WHITE, new Color(0, 100, 0, 200));
+            drawTextWithBackground(g2d, "Start", 190, 525, Color.WHITE, new Color(178, 34, 34, 200));
         }
 
         /**

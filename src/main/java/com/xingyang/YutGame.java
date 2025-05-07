@@ -70,6 +70,10 @@ public class YutGame {
         private int x, y;  // Coordinates
         private List<Piece> pieces = new ArrayList<>();  // Pieces at this point
 
+        public int index;
+        public BoardPoint next;
+        public BoardPoint nextAlt;
+
         public BoardPoint(int x, int y) {
             this.x = x;
             this.y = y;
@@ -129,7 +133,7 @@ public class YutGame {
      * Initialize the board points
      */
     private void initializeBoardPoints() {
-        boardPoints = new BoardPoint[30]; // Includes start, end, and path points
+        boardPoints = new BoardPoint[31]; // Includes start, end, and path points
 
         // Standard path (main circular route on the board)
         boardPoints[0] = new BoardPoint(200, 550); // Start
@@ -154,23 +158,54 @@ public class YutGame {
         boardPoints[19] = new BoardPoint(200, 450);
 
         // Special path (diagonal through center)
-        boardPoints[20] = new BoardPoint(283, 467); // Center to bottom-right
-        boardPoints[21] = new BoardPoint(366, 384);
-        boardPoints[22] = new BoardPoint(533, 217);
-        boardPoints[23] = new BoardPoint(614, 134);
+        boardPoints[20] = new BoardPoint(614, 134); // Top-right
+        boardPoints[21] = new BoardPoint(533, 217);
+        boardPoints[22] = new BoardPoint(366, 384);
+        boardPoints[23] = new BoardPoint(283, 467); // Bottom-left
 
         // Second diagonal path
-        boardPoints[24] = new BoardPoint(283, 133); // Center to top-right
-        boardPoints[25] = new BoardPoint(366, 216);
-        boardPoints[26] = new BoardPoint(533, 383);
-        boardPoints[27] = new BoardPoint(616, 466);
+        boardPoints[24] = new BoardPoint(616, 466); // Bottom-right
+        boardPoints[25] = new BoardPoint(533, 383);
+        boardPoints[26] = new BoardPoint(366, 216);
+        boardPoints[27] = new BoardPoint(283, 133); // Top-left
 
         // Center point
-        boardPoints[28] = new BoardPoint(450, 300);
+        boardPoints[28] = new BoardPoint(450, 300); // left up center point
+        boardPoints[29] = new BoardPoint(450, 300); // left down center point
 
         // End point
-        boardPoints[29] = new BoardPoint(200, 550);
+        boardPoints[30] = new BoardPoint(200, 550);
+
+        linkBoardPoints();
     }
+
+    // link board points, nextAlt mean shortcut if remain steps are 0
+    private void linkBoardPoints() {
+        //  0 → 1 → 2 → ... → 19
+        for (int i = 0; i < 19; i++) {
+            boardPoints[i].next = boardPoints[i + 1];
+        }
+
+        // diagonal path 1: 5 → 24 → 25 → 28 → 26 → 27 -> 15
+        boardPoints[5].nextAlt = boardPoints[24];
+        boardPoints[24].next = boardPoints[25];
+        boardPoints[25].next = boardPoints[28];
+        boardPoints[28].next = boardPoints[26];
+        boardPoints[26].next = boardPoints[27];
+        boardPoints[27].next = boardPoints[15];
+        boardPoints[28].nextAlt = boardPoints[22];
+
+        // diagonal path 2: 10 → 20 → 21 → 29 → 22 → 23 -> 0 -> 30
+        boardPoints[10].nextAlt = boardPoints[20];
+        boardPoints[20].next = boardPoints[21];
+        boardPoints[21].next = boardPoints[29];
+        boardPoints[29].next = boardPoints[22];
+        boardPoints[22].next = boardPoints[23];
+        boardPoints[23].next = boardPoints[0];
+
+        boardPoints[0].next = boardPoints[30];
+    }
+
 
     /**
      * Get current player

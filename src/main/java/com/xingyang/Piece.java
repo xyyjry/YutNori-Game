@@ -8,6 +8,7 @@ import java.awt.Color;
 public class Piece {
     private int id;
     private int position; // The piece's position on the board
+    private int previous; // for back-do , store previous position
     private boolean isHome; // Whether the piece is at the start
     private boolean isFinished; // Whether the piece has reached the end
     private Color color;
@@ -18,6 +19,7 @@ public class Piece {
         this.owner = owner;
         this.color = color;
         this.position = -1; // -1 indicates the piece is at the start
+        this.previous = -1;
         this.isHome = true;
         this.isFinished = false;
     }
@@ -41,9 +43,9 @@ public class Piece {
         position += steps;
         
         // Check whether the piece has reached the end (position 29 is the endpoint)
-        if (position >= 29) {
+        if (position >= 30) {
             isFinished = true;
-            position = 29; // Set to endpoint position
+            position = 30; // Set to endpoint position
             return true;
         }
         
@@ -116,7 +118,7 @@ public class Piece {
         if (position == -1) {
             isHome = true;
             isFinished = false;
-        } else if (position >= 29) {
+        } else if (position >= 30) {
             isFinished = true;
             isHome = false;
         } else {
