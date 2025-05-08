@@ -1,6 +1,6 @@
-# Yut Nori – Traditional Korean-Chinese Game
+# Yut Nori – Traditional Korean Game
 
-This is a Java Swing implementation of the traditional Korean-Chinese board game **Yut Nori**.
+This is a Java Swing implementation of the traditional Korean board game **Yut Nori**.
 
 ## Game Rules
 
