@@ -53,7 +53,7 @@
 
 > 게임 진행 화면 및 말 이동 애니메이션
 
-(여기에 실제 게임 스크린샷 이미지 추가 가능)
+<img src="./Images/ScreenshotSample01.png" >
 
 ---
 
