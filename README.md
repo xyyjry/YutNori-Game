@@ -51,9 +51,9 @@
 
 ## 📸 시연 이미지
 
-> 게임 진행 화면 및 말 이동 애니메이션
+> 게임 진행 화면 스크린 샷
 
-<img src="./Images/ScreenshotSample01.png" >
+<img src="./Images/ScreenshotSample01.png" width="350" height="100%" >
 
 ---
 
