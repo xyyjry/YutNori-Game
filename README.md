@@ -73,7 +73,7 @@
 1. 프로젝트 클론
 
 ```bash
-git clone https://github.com/your-username/yutnori-game.git
+git clone https://github.com/xyyjry/YutNori-Game.git
 ```
 
 2. IDE (IntelliJ 또는 Eclipse 등)로 열기
