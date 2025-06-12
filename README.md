@@ -70,10 +70,10 @@
 
 ## 🧪 실행 방법
 
-1. Shell Script 동작
+1. Shell Script 실행
    
-```
-run fix-compile.sh
+```click to run script
+fix-compile.sh
 ```
    
 2. 프로젝트 클론
