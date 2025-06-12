@@ -82,9 +82,7 @@ fix-compile.sh
 git clone https://github.com/xyyjry/YutNori-Game.git
 ```
 
-3. IDE (IntelliJ 또는 Eclipse 등)로 열기
-
-3. Main 클래스 실행
+3. IDE (IntelliJ 또는 Eclipse 등)로 열기 Main 클래스 실행
 
 ```
 YutNoriApp.java 또는 YutNoriGame.java 실행
