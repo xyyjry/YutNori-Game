@@ -70,13 +70,19 @@
 
 ## 🧪 실행 방법
 
-1. 프로젝트 클론
+1. Shell Script 동작
+   
+```
+run fix-compile.sh
+```
+   
+2. 프로젝트 클론
 
 ```bash
 git clone https://github.com/xyyjry/YutNori-Game.git
 ```
 
-2. IDE (IntelliJ 또는 Eclipse 등)로 열기
+3. IDE (IntelliJ 또는 Eclipse 등)로 열기
 
 3. Main 클래스 실행
 
